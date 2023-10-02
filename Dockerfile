@@ -18,4 +18,4 @@ ADD **/*.war /usr/local/tomcat/webapps
 EXPOSE 8081
 
 # Start Tomcat when the container launches
-CMD ["catalina.sh", "run"]
+CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
