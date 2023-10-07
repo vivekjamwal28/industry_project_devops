@@ -1,21 +1,10 @@
-# Use an official Tomcat runtime as a parent image
-FROM tomcat:latest
-
-# Set environment variables for Java
-#ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
-#ENV PATH $JAVA_HOME/bin:$PATH
-
-# Install OpenJDK 8
-RUN apt-get update && apt-get install -y openjdk-8-jdk
-
-# Create a directory to store WAR files
-RUN mkdir /usr/local/tomcat/webapps/app
-
-# Copy your WAR file(s) from the server to the container
+FROM docker.io/library/ubuntu:18.04
+RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get -y install openjdk-8-jdk wget
+RUN mkdir /usr/local/tomcat
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.68/bin/apache-tomcat-9.0.68.tar.gz  /tmp/apache-tomcat-9.0.68.tar.gz
+RUN cd /tmp &&  tar xvfz apache-tomcat-9.0.68.tar.gz
+RUN cp -Rv /tmp/apache-tomcat-9.0.68/* /usr/local/tomcat/
 ADD **/*.war /usr/local/tomcat/webapps
-
-# Expose the Tomcat port
 EXPOSE 8080
-
-# Start Tomcat when the container launches
-CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
+CMD /usr/local/tomcat/bin/catalina.sh run
