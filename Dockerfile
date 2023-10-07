@@ -15,7 +15,7 @@ RUN mkdir /usr/local/tomcat/webapps/app
 ADD **/*.war /usr/local/tomcat/webapps
 
 # Expose the Tomcat port
-EXPOSE 8081
+EXPOSE 8080
 
 # Start Tomcat when the container launches
 CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
