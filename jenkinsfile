@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    options {
+      buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+      timestamps ()
+      timeout(time: 8, unit: 'MINUTES') 
+    }
+    stages {
+        stage ('Branch Checkout') {
+        steps {
+        cleanWs()
+        checkout([$class: 'GitSCM',
+        branches: [[name: "main"]],
+ 	    userRemoteConfigs: [[
+							credentialsId: 'github_creds',
+							url: 'https://github.com/vivekjamwal28/industry_project_devops.git',
+						
+						]]]) 
+		    }
+	    }
+        stage('Compile') {
+            steps {
+                sh 'mvn compile'  // Use your build tool's command here
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'  // Use your testing tool's command here
+            }
+        }
+        stage('Package') {
+            steps {
+                sh 'mvn package'  // Use your packaging command here
+            }
+        }
+        stage('Docker build') {
+            steps {
+                sh 'sudo docker stop abc-tomcat || true'
+                sh 'sudo docker rm abc-tomcat || true'
+                sh 'sudo docker build -t my-tomcat-app .'  // docker build
+                sh 'sudo docker rmi $(sudo docker images --filter "dangling=true" -q)'
+            }
+        }
+        stage('Docker run') {
+            steps {
+                sh 'sudo docker run -d -p 8081:8080 --name abc-tomcat my-tomcat-app'  // docker build
+            }
+        }
+    }
+}
