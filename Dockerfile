@@ -6,5 +6,6 @@ ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.80/bin/apache-tomcat-9.0.80.ta
 RUN cd /tmp &&  tar xvfz apache-tomcat-9.0.80.tar.gz
 RUN cp -Rv /tmp/apache-tomcat-9.0.80/* /usr/local/tomcat/
 ADD **/*.war /usr/local/tomcat/webapps
+COPY ./tomcat-users.xml /usr/local/tomcat/conf/
 EXPOSE 8080
 CMD /usr/local/tomcat/bin/catalina.sh run
